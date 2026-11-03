@@ -33,7 +33,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       # 如果配置了飞书密钥，就从飞书同步数据
       - name: Sync from Feishu
