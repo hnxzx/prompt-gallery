@@ -1,14 +1,9 @@
 name: Deploy to GitHub Pages
 
 on:
-  # 每 6 小时自动同步并部署
-  schedule:
-    - cron: '0 */6 * * *'
-  # 手动触发
-  workflow_dispatch:
-  # 推送到 main 分支时也部署
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -30,22 +25,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
-
-      # 如果配置了飞书密钥，就从飞书同步数据
-      - name: Sync from Feishu
-        if: ${{ secrets.FEISHU_APP_ID != '' }}
-        env:
-          FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
-          FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
-          FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
-          FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
-        run: |
-          pip install requests
-          python scripts/sync_feishu_api.py
 
       - name: Build
         run: npm run build
