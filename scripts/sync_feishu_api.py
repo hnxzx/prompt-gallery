@@ -201,6 +201,11 @@ def main():
     # 过滤掉空记录
     items = [item for item in items if item.get("title")]
 
+    # 如果飞书里没有有效数据，保留现有示例数据，不覆盖
+    if len(items) == 0:
+        print("ℹ️  飞书表格暂无有效数据，保留现有示例数据")
+        return
+
     output = {
         "schemaVersion": 1,
         "updatedAt": datetime.datetime.now().isoformat(),

@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
 
 permissions:
   contents: read
@@ -28,6 +30,17 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Sync data from Feishu
+        if: ${{ secrets.FEISHU_APP_ID != '' }}
+        env:
+          FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+          FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+          FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
+          FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
+        run: |
+          pip install requests
+          python scripts/sync_feishu_api.py
 
       - name: Build
         run: npm run build
